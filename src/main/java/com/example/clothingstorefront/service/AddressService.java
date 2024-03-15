@@ -16,6 +16,10 @@ public class AddressService {
     @Autowired
     AddressRepository addressRepo;
 
+    // dependency for validation checking
+    @Autowired
+    UserService userSvc;
+
     /**
      * Takes in an address DTO and persists it to the database.
      * @param toAdd The relevant DTO to save
@@ -24,10 +28,22 @@ public class AddressService {
     public Address addAddress(AddressDTO toAdd) {
         // use mapper to map all elements of DTO to our converted value
         ModelMapper converter = new ModelMapper();
-        converter.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        converter.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         Address converted = converter.map(toAdd, Address.class);
+
+        // need to make the connection to the user manually
+        converted.setCreatedBy(userSvc.getByUUID(toAdd.getUserId()));
 
         // and return what the repository would normally return
         return addressRepo.save(converted);
+    }
+
+    /**
+     * Takes in a (mostly empty) address DTO and uses the ID entry to delete it from
+     * the database.
+     * @param toDelete encapsulated information for deletion operation
+     */
+    public void deleteAddress(AddressDTO toDelete) {
+        addressRepo.deleteByIdAndCreatedBy(toDelete.getId(), userSvc.getByUUID(toDelete.getUserId()));
     }
 }

@@ -1,10 +1,11 @@
 package com.example.clothingstorefront.repository;
 
 import com.example.clothingstorefront.model.Address;
+import com.example.clothingstorefront.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-
+    public void deleteByIdAndCreatedBy(Long addressId, User createdBy);
 }
