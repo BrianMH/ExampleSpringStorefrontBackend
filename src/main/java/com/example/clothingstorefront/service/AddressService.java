@@ -3,6 +3,7 @@ package com.example.clothingstorefront.service;
 import com.example.clothingstorefront.dto.AddressDTO;
 import com.example.clothingstorefront.model.Address;
 import com.example.clothingstorefront.repository.AddressRepository;
+import com.example.clothingstorefront.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class AddressService {
 
     // dependency for validation checking
     @Autowired
-    UserService userSvc;
+    UserRepository userRepo;
 
     /**
      * Takes in an address DTO and persists it to the database.
@@ -32,7 +33,7 @@ public class AddressService {
         Address converted = converter.map(toAdd, Address.class);
 
         // need to make the connection to the user manually
-        converted.setCreatedBy(userSvc.getByUUID(toAdd.getUserId()));
+        converted.setCreatedBy(userRepo.getUserByUserId(toAdd.getUserId()));
 
         // and return what the repository would normally return
         return addressRepo.save(converted);
@@ -44,6 +45,6 @@ public class AddressService {
      * @param toDelete encapsulated information for deletion operation
      */
     public void deleteAddress(AddressDTO toDelete) {
-        addressRepo.deleteByIdAndCreatedBy(toDelete.getId(), userSvc.getByUUID(toDelete.getUserId()));
+        addressRepo.deleteByIdAndCreatedBy(toDelete.getId(), userRepo.getUserByUserId(toDelete.getUserId()));
     }
 }

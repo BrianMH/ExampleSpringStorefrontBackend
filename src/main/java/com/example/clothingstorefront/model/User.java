@@ -38,10 +38,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // TODO: Add role functionality to user
-    // private Role userRole;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @Column(name = "avatar_ref", nullable = false)
+    @Column(nullable = false)
     private String avatarRef;
 
     /** Connections with other entities **/
@@ -77,9 +78,6 @@ public class User {
         Instant nowTime = Instant.now();
         this.createdOn = nowTime;
         this.updatedOn = nowTime;
-
-        // set default avatar
-        this.avatarRef = "";
     }
 
     @Override
