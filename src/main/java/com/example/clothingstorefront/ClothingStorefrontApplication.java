@@ -30,8 +30,8 @@ public class ClothingStorefrontApplication implements CommandLineRunner {
     // We can use this method to pre-populate our database
     @Override
     public void run(String... args) {
-        initializeMessages();
-        initializeUsers();
+//        initializeMessages();
+//        initializeUsers();
     }
 
     public void initializeMessages() {
@@ -74,7 +74,6 @@ public class ClothingStorefrontApplication implements CommandLineRunner {
         curUser.setUsername("admin");
         curUser.setPassword(encoder.encode("password"));
         curUser.setScreenName("Admin User");
-        curUser.setAvatarRef("/defaultPic.png");
         curUser.setRole(Role.ROLE_ADMIN.toString());
         userService.addUser(curUser);
     }

@@ -42,7 +42,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column
     private String avatarRef;
 
     /** Connections with other entities **/

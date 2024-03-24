@@ -17,15 +17,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
 
-    public UserDTO getByUUID(UUID uuid) {
-        User relUser = userRepo.getUserByUserId(uuid);
-
-        // convert and return
-        ModelMapper converter = new ModelMapper();
-        converter.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-        return converter.map(relUser, UserDTO.class);
-    }
-
     public Optional<UserDTO> findByUUID(UUID uuid) {
         Optional<User> relUser = userRepo.findById(uuid);
 
@@ -70,5 +61,30 @@ public class UserService {
         User savedUser = userRepo.save(convertedInput);
         System.out.println(savedUser);
         return converter.map(savedUser, UserDTO.class);
+    }
+
+    public boolean userExists(UUID reqUser) {
+        return userRepo.existsById(reqUser);
+    }
+
+    public void updateUser(UUID reqUser, UserDTO adjustedUser) {
+        // we can get our user first
+        Optional<User> userHolder = userRepo.findById(reqUser);
+        if(userHolder.isEmpty())
+            return;
+        User toModify = userHolder.get();
+
+        // first perform changes to object
+        if(!(adjustedUser.getAvatarRef() == null))
+            toModify.setAvatarRef(adjustedUser.getAvatarRef());
+        if(!(adjustedUser.getEmail() == null))
+            toModify.setEmail(adjustedUser.getEmail());
+        if(!(adjustedUser.getPassword() == null))
+            toModify.setPassword(adjustedUser.getPassword());
+        if(!(adjustedUser.getScreenName() == null))
+            toModify.setScreenName(adjustedUser.getScreenName());
+
+        // and re-persist the object
+        userRepo.save(toModify);
     }
 }

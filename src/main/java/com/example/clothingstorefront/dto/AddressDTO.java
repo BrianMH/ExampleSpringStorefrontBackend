@@ -1,11 +1,9 @@
 package com.example.clothingstorefront.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,6 +12,7 @@ import java.util.UUID;
  */
 @Setter
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDTO {

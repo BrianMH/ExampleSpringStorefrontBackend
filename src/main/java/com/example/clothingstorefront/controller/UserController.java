@@ -33,6 +33,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(received.get());
     }
 
+    @PatchMapping("/update")
+    public ResponseEntity<ResultDTO> updateUser(@RequestBody UserDTO adjustedUser) {
+        // We go ahead and patch our specified user with any of the requested changes passed onto UserDTO
+        if(!userService.userExists(adjustedUser.getUserId()))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResultDTO(false, "Failed to find given user."));
+
+        // otherwise patch
+        userService.updateUser(adjustedUser.getUserId(), adjustedUser);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResultDTO(true, "User object modified"));
+    }
+
     @GetMapping("")
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam("query") String query) {
         // For this, we need to receive all users given some search query (empty being generic)

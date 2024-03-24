@@ -28,7 +28,7 @@ public class MessageController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteMessageById(@PathVariable("id")long remId) {
+    public ResponseEntity<ResultDTO> deleteMessageById(@PathVariable("id")long remId) {
         // with deletion we should make sure the id actually exists beforehand
         if(msgService.getMessageById(remId).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResultDTO(false, "Invalid ID"));
