@@ -28,9 +28,9 @@ public class User {
     private UUID userId;
 
     /** User attributes **/
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
     private String screenName;
@@ -55,8 +55,8 @@ public class User {
     private Set<SavedCart> savedCarts;
 
     // connects users with account details
-    @OneToOne(mappedBy = "user")
-    private UserDetails userDetails;
+//    @OneToOne(mappedBy = "user")
+//    private UserDetails userDetails;
 
     // connects users to their notifications
     @OneToMany(mappedBy = "notifyBy")
@@ -83,6 +83,6 @@ public class User {
     @Override
     public String toString() {
         return "{User (UUID=" + userId + "): email-" + email + ",username=" + username + ",avatarRef=" + avatarRef +
-                ",userDetails=" + userDetails + ",createdOn=" + createdOn + ",updatedOn" + updatedOn + "}";
+                ",createdOn=" + createdOn + ",updatedOn" + updatedOn + "}";
     }
 }

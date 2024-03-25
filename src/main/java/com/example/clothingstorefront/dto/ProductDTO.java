@@ -27,9 +27,9 @@ public class ProductDTO {
     private boolean outOfStock;
     @JsonProperty("carouselList")
     private List<String> imageCollection;
+    @JsonProperty("priceInCents")
+    private long priceInCents;
 
-    @JsonProperty("tagList")
-    private List<String> tagNames;
-
-
+    @JsonProperty("category")
+    private ProductCategoryDTO prodCategory;
 }

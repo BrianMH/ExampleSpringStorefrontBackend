@@ -1,6 +1,7 @@
 package com.example.clothingstorefront.controller;
 
 import com.example.clothingstorefront.dto.ResultDTO;
+import com.example.clothingstorefront.dto.ShortMessageDTO;
 import com.example.clothingstorefront.dto.UserDTO;
 import com.example.clothingstorefront.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,8 +21,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO inUser) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.addUser(inUser));
+    public ResponseEntity<?> addUser(@RequestBody UserDTO inUser) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(userService.addUser(inUser));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResultDTO(false, e.getMessage()));
+        }
     }
 
     @GetMapping("/{uuid}")
@@ -44,13 +50,28 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResultDTO(true, "User object modified"));
     }
 
-    @GetMapping("")
+    @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam("query") String query) {
         // For this, we need to receive all users given some search query (empty being generic)
         List<UserDTO> received = userService.findUsersGivenQuery(query);
 
         // Then wrap this payload
         return ResponseEntity.status(HttpStatus.OK).body(received);
+    }
+
+    @GetMapping("/paged/{pageSize}")
+    public ResponseEntity<Long> getNumPages(@PathVariable int pageSize, @RequestParam String query) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getNumPages(pageSize, query));
+    }
+
+    @GetMapping("/paged/{pageSize}/{page}")
+    public ResponseEntity<List<UserDTO>> getPagedUsersWithQuery(@PathVariable int page, @PathVariable int pageSize, @RequestParam String query) {
+        // throw an error with problematic inputs
+        if(page < 0 || pageSize <= 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
+
+        // like before we can just return the paged values
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getOffsetPagedUsersGivenQuery(page, pageSize, query));
     }
 
     @GetMapping("/email/{email}")

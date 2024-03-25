@@ -32,15 +32,18 @@ public class Product {
     private String description;
     @Column(name = "OOS", nullable = false)
     private boolean outOfStock;
+    @Column(name="price", nullable = false)
+    private long priceInCents;
 
     // holds our collection of images
     @Convert(converter = URLArrayConverter.class)
     @Column(name = "carousel_arr")
     private List<String> imageCollection;
 
-    // product categories can possibly overlap (a product owns its tags)
-    @ManyToMany
-    private Set<ProdCategory> prodTags;
+    // for simplicity, enforce a product only is only in one category
+    // TODO: This should ideally be many-to-many...
+    @ManyToOne(optional = false)
+    private ProdCategory prodCategory;
 
     // holds some simple metadata
     @Column(name = "created", nullable = false)
@@ -55,15 +58,26 @@ public class Product {
     }
 
     @Override
+    public String toString() {
+        return "{Product [id=" + id + "] -> (name=" + name + ")+(description=" + description.substring(0, Math.min(description.length(), 9))
+                + ")+(outOfStock=" + outOfStock + ")+(priceInCents=" + priceInCents + ")+(numImages=" + imageCollection.size() + ")+(category="
+                + prodCategory + "}";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id == product.id && outOfStock == product.outOfStock && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(dateCreated, product.dateCreated);
+        return id == product.id && outOfStock == product.outOfStock &&
+                Objects.equals(name, product.name) &&
+                Objects.equals(description, product.description) &&
+                Objects.equals(dateCreated, product.dateCreated) &&
+                Objects.equals(priceInCents, product.priceInCents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, outOfStock, dateCreated);
+        return Objects.hash(id, name, description, outOfStock, priceInCents, dateCreated);
     }
 }

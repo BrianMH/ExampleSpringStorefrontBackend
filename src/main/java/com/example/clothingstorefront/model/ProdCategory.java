@@ -32,7 +32,7 @@ public class ProdCategory {
     private String imageRef;
 
     // connects all our relevant products to a given category
-    @ManyToMany(mappedBy = "prodTags")
+    @OneToMany(mappedBy = "prodCategory")
     private Set<Product> relProducts;
 
     @Override
