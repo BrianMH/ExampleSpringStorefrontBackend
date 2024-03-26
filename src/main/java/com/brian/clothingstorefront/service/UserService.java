@@ -24,6 +24,11 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * Returns a user based on its primary key (UUID)
+     * @param uuid
+     * @return
+     */
     public Optional<UserDTO> findByUUID(UUID uuid) {
         Optional<User> relUser = userRepo.findById(uuid);
 
@@ -36,6 +41,11 @@ public class UserService {
         return Optional.of(converter.map(relUser.get(), UserDTO.class));
     }
 
+    /**
+     * Returns a user based on a unique aspect (email)
+     * @param email
+     * @return
+     */
     public Optional<UserDTO> findByEmail(String email) {
         Optional<User> relUser = userRepo.findByEmail(email);
 
@@ -48,6 +58,14 @@ public class UserService {
         return Optional.of(converter.map(relUser.get(), UserDTO.class));
     }
 
+    /**
+     * Returns a list of users capped at a size of (pageSize) at a given page (pageNumber) assuming
+     * that the attributes in user satisfy a specific query.
+     * @param pageNumber
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public List<UserDTO> getOffsetPagedUsersGivenQuery(int pageNumber, int pageSize, String query) {
         Page<User> page = userRepo.findAllByQueryWithPages(query, PageRequest.of(pageNumber, pageSize));
 
@@ -57,6 +75,11 @@ public class UserService {
         return page.stream().map(message -> converter.map(message, UserDTO.class)).toList();
     }
 
+    /**
+     * Returns a list of all users who have text-element attributes that satisfy the query
+     * @param query
+     * @return
+     */
     public List<UserDTO> findUsersGivenQuery(String query) {
         List<User> relUser = userRepo.findUsersByQuery(query);
 
@@ -66,6 +89,11 @@ public class UserService {
         return relUser.stream().map((user -> converter.map(user, UserDTO.class))).toList();
     }
 
+    /**
+     * Adds a new user to the database given a DTO input
+     * @param inUser
+     * @return
+     */
     public UserDTO addUser(UserDTO inUser) {
         // first convert to User
         ModelMapper converter = new ModelMapper();
@@ -81,14 +109,30 @@ public class UserService {
         return converter.map(savedUser, UserDTO.class);
     }
 
+    /**
+     * Returns the number of pages that a pageable return could generate given a page size and query
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public Long getNumPages(long pageSize, String query) {
         return (long)Math.ceil(userRepo.findNumPagesWithQuery(query)/(double)pageSize);
     }
 
+    /**
+     * Returns whether or not the user exists in the database based on their UUID
+     * @param reqUser
+     * @return
+     */
     public boolean userExists(UUID reqUser) {
         return userRepo.existsById(reqUser);
     }
 
+    /**
+     * Patches a user given a DTO that could be mostly empty
+     * @param reqUser
+     * @param adjustedUser
+     */
     public void updateUser(UUID reqUser, UserDTO adjustedUser) {
         // we can get our user first
         Optional<User> userHolder = userRepo.findById(reqUser);

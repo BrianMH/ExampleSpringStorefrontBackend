@@ -26,7 +26,10 @@ public class ProductController {
      * @return
      */
     @GetMapping(value = "/paged/{pageSize}/{page}")
-    public ResponseEntity<List<ProductDTO>> getPagedShortMessages(@PathVariable int page, @PathVariable int pageSize, @RequestParam(required = false) Long catId, @RequestParam String query) {
+    public ResponseEntity<List<ProductDTO>> getPagedProductsWithQueryAndCategory(@PathVariable int page,
+                                                                                 @PathVariable int pageSize,
+                                                                                 @RequestParam(required = false) Long catId,
+                                                                                 @RequestParam String query) {
         // throw an error with problematic inputs
         if (page < 0 || pageSize <= 0)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
@@ -38,8 +41,17 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.OK).body(prodService.getOffsetPagedProductsWithQuery(page, pageSize, query));
     }
 
+    /**
+     * Returns the number of pages associated with the given query if they were to be passed with a page value to the paged route
+     * @param pageSize
+     * @param catId
+     * @param query
+     * @return
+     */
     @GetMapping(value = "/paged/{pageSize}")
-    public ResponseEntity<Long> getPagedShortMessages(@PathVariable int pageSize, @RequestParam(required = false) Long catId, @RequestParam String query) {
+    public ResponseEntity<Long> getNumberPagesWithQueryAndCategory(@PathVariable int pageSize,
+                                                                   @RequestParam(required = false) Long catId,
+                                                                   @RequestParam String query) {
         // throw an error with problematic inputs
         if(pageSize < 0)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((long)0);

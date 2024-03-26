@@ -23,6 +23,11 @@ public class AddressController {
     @Autowired
     AddressService addressSvc;
 
+    /**
+     * Receives a given addressId and returns the address, or a ResultDTO representing the failed operation, otherwise
+     * @param addressId
+     * @return
+     */
     @GetMapping("/{addressId}")
     public ResponseEntity<?> getAddressById(@PathVariable long addressId) {
         AddressDTO toReturn;
@@ -35,6 +40,11 @@ public class AddressController {
         }
     }
 
+    /**
+     * Patches an address given an input DTO package and returns the ResultDTO corresponding to the operation success.
+     * @param toPatch
+     * @return
+     */
     @PatchMapping("/patch")
     public ResponseEntity<ResultDTO> updateAddressById(@RequestBody AddressDTO toPatch) {
         try {
@@ -46,11 +56,21 @@ public class AddressController {
         }
     }
 
+    /**
+     * Takes in a userId and returns a list of addresses that are associated with that UUID (which can be empty)
+     * @param userId
+     * @return
+     */
     @GetMapping("/byUser/{userId}")
     public ResponseEntity<List<AddressDTO>> getUserAddresses(@PathVariable UUID userId) {
         return ResponseEntity.status(HttpStatus.OK).body(addressSvc.getAddressesByUser(userId));
     }
 
+    /**
+     * Takes in a DTO representation of an Address and persists it to the database
+     * @param toAdd
+     * @return
+     */
     @PostMapping("/add")
     public ResponseEntity<?> addAddressToUser(@RequestBody AddressDTO toAdd) {
         try {
@@ -61,6 +81,11 @@ public class AddressController {
         }
     }
 
+    /**
+     * Takes in an addressId and deletes that entry
+     * @param addressId
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ResultDTO> deleteMessageById(@PathVariable("id")long addressId) {
         // with deletion we should make sure the id actually exists beforehand

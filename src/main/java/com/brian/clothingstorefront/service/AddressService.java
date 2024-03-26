@@ -79,6 +79,12 @@ public class AddressService {
         return converter.map(addressRepo.save(converted), AddressDTO.class);
     }
 
+    /**
+     * Returns an address based on the passed address ID
+     * @param addressId the id of the address to look up
+     * @return a converted address object
+     * @throws Exception if the address does not exist
+     */
     public AddressDTO getAddressById(long addressId) throws Exception {
         ModelMapper converter = new ModelMapper();
         converter.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);

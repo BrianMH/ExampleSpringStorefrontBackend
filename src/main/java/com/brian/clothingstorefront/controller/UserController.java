@@ -19,6 +19,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Adds a user to the database given the passed DTO. If an error is thrown, returns a BAD_REQUEST value along with
+     * the ResultDTO corresponding to the failure.
+     * @param inUser
+     * @return
+     */
     @PostMapping("/add")
     public ResponseEntity<?> addUser(@RequestBody UserDTO inUser) {
         try {
@@ -28,6 +34,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Gets a user given their UUID or returns a NOT_FOUND along with the ResultDTO representing the failure, otherwise.
+     * @param inUser
+     * @return
+     */
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getUser(@PathVariable("uuid") UUID inUser) {
         // We can fetch particular users by UUID
@@ -38,6 +49,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(received.get());
     }
 
+    /**
+     * Patches the user object given a passedDTO object representing the desired changes
+     * @param adjustedUser
+     * @return
+     */
     @PatchMapping("/update")
     public ResponseEntity<ResultDTO> updateUser(@RequestBody UserDTO adjustedUser) {
         // We go ahead and patch our specified user with any of the requested changes passed onto UserDTO
@@ -49,6 +65,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResultDTO(true, "User object modified"));
     }
 
+    /**
+     * Returns a list of all users in the database (which can be empty)
+     * @param query
+     * @return
+     */
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam("query") String query) {
         // For this, we need to receive all users given some search query (empty being generic)
@@ -58,11 +79,25 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(received);
     }
 
+    /**
+     * Returns the number of pages that would be needed to represent the list of users that satisfy a given query
+     * but returned in sets of pageSize.
+     * @param pageSize
+     * @param query
+     * @return
+     */
     @GetMapping("/paged/{pageSize}")
     public ResponseEntity<Long> getNumPages(@PathVariable int pageSize, @RequestParam String query) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getNumPages(pageSize, query));
     }
 
+    /**
+     * Returns the actual pages associated with users that satisfy a given query
+     * @param page
+     * @param pageSize
+     * @param query
+     * @return
+     */
     @GetMapping("/paged/{pageSize}/{page}")
     public ResponseEntity<List<UserDTO>> getPagedUsersWithQuery(@PathVariable int page, @PathVariable int pageSize, @RequestParam String query) {
         // throw an error with problematic inputs
@@ -73,6 +108,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getOffsetPagedUsersGivenQuery(page, pageSize, query));
     }
 
+    /**
+     * Returns a user given a known e-mail (which is only used for login authentication)
+     * @param email
+     * @return
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getUser(@PathVariable("email") String email) {
         // fetch the user by email now

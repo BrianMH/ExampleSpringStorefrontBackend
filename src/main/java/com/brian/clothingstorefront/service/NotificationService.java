@@ -101,12 +101,13 @@ public class NotificationService {
         // and our product category
         Optional<ProdCategory> relCategory = prodCatRepo.findById(toAdd.getCategory().getId());
 
-        // and make sure both exist before continuing
+        // and make sure both exist before continuing and manually replacing values
         if(relUser.isEmpty() || relCategory.isEmpty()) {
             throw new Exception("Failed to find associated category or user...");
         }
         convertedAddVal.setCategory(relCategory.get());
         convertedAddVal.setNotifyBy(relUser.get());
+        convertedAddVal.setEnabled(toAdd.getEnabled());
 
         // and then persist the values
         Notification savedValue = notifRepo.save(convertedAddVal);

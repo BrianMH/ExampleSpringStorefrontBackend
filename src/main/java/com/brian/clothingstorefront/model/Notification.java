@@ -1,10 +1,9 @@
 package com.brian.clothingstorefront.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Objects;
 
 /**
  * Functions as a connector between a User and a given Product Category.
@@ -15,6 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "category_id"})})
 public class Notification {
@@ -32,4 +32,17 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private ProdCategory category;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Notification that = (Notification) o;
+        return id == that.id && enabled == that.enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, enabled);
+    }
 }

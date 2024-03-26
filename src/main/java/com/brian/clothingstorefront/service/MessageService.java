@@ -35,17 +35,31 @@ public class MessageService {
         return converter.map(persisted, MessageDTO.class);
     }
 
+    /**
+     * Deletes a given message
+     * @param toDelete
+     */
     public void deleteMessage(MessageDTO toDelete) {
         // we can use the ID of the message to delete it
         messageRepo.deleteById(toDelete.getId());
     }
 
+    /**
+     * Returns a list of all the messages in the database (without pagination)
+     * @return list of all messages
+     */
     public List<MessageDTO> getAllMessages() {
         ModelMapper converter = new ModelMapper();
         converter.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         return messageRepo.findAll().stream().map(message -> converter.map(message, MessageDTO.class)).toList();
     }
 
+    /**
+     * Returns a list of paginated messages in their short format without a query
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
     public List<ShortMessageDTO> getOffsetPagedBriefMessages(int pageNumber, int pageSize) {
         Page<Message> page = messageRepo.findAllByOrderByDateCreatedDesc(PageRequest.of(pageNumber, pageSize));
 
@@ -55,6 +69,13 @@ public class MessageService {
         return page.stream().map(message -> converter.map(message, ShortMessageDTO.class)).toList();
     }
 
+    /**
+     * Returns a list of paginated messages in their short format with a query
+     * @param pageNumber
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public List<ShortMessageDTO> getOffsetPagedBriefMessages(int pageNumber, int pageSize, String query) {
         Page<Message> page = messageRepo.findAllByOrderByDateCreatedDescWithQuery(query, PageRequest.of(pageNumber, pageSize));
 
@@ -64,14 +85,30 @@ public class MessageService {
         return page.stream().map(message -> converter.map(message, ShortMessageDTO.class)).toList();
     }
 
+    /**
+     * Returns the number of pages present assuming a given page size
+     * @param pageSize
+     * @return
+     */
     public Long getNumPages(int pageSize) {
         return (long)Math.ceil(messageRepo.count()/(double)pageSize);
     }
 
+    /**
+     * Returns the number of pages present assuming a given page size and query
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public Long getNumPages(int pageSize, String query) {
         return (long)Math.ceil(messageRepo.findNumPagesWithQuery(query)/(double)pageSize);
     }
 
+    /**
+     * Returns a message based on the message Id
+     * @param id
+     * @return
+     */
     public Optional<MessageDTO> getMessageById(long id) {
         ModelMapper converter = new ModelMapper();
         converter.getConfiguration().setMatchingStrategy((MatchingStrategies.STANDARD));

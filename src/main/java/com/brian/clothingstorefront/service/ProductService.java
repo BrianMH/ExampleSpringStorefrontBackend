@@ -67,10 +67,24 @@ public class ProductService {
         return page.stream().map(prod -> converter.map(prod, ProductDTO.class)).toList();
     }
 
+    /**
+     * Returns the number of pages possible to return given a specific page size and query to satisfy
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public Long getNumPages(int pageSize, String query) {
         return (long)Math.ceil(prodRepo.findCountWithQuery(query)/(double)pageSize);
     }
 
+    /**
+     * Returns the number of pages possible to return given a specific page size, a query to satisfy, and a category
+     * to enforce that products belong to
+     * @param pageSize
+     * @param query
+     * @param catId
+     * @return
+     */
     public Long getNumPages(int pageSize, String query, long catId) {
         return (long)Math.ceil(prodRepo.findCountWithQueryAndCategory(query, catId)/(double)pageSize);
     }
